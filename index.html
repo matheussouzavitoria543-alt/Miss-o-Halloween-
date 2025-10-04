@@ -51,23 +51,19 @@ body{background-color:var(--site-bg); transition:background-color .3s ease, back
   <div class="card w-full max-w-xl p-6 relative">
     <button onclick="closeAdminPanel()" class="absolute top-4 right-4 text-gray-600"><i data-feather="x"></i></button>
     <h3 class="text-2xl font-bold mb-4">Painel de Administração</h3>
-
     <div class="space-y-3">
       <div class="flex gap-2">
         <button onclick="openGlobalMessagePrompt()" class="flex-1 px-4 py-2 rounded" style="background:var(--button-color);color:white">Enviar Mensagem Global</button>
         <button onclick="openProofsModal()" class="px-4 py-2 rounded border">Ver Provas</button>
       </div>
-
       <div class="flex gap-2">
         <button onclick="generateCredential()" class="px-4 py-2 rounded" style="background:var(--primary);color:white">Gerar Credencial</button>
         <button onclick="downloadCredentials()" class="px-4 py-2 rounded border">Exportar</button>
       </div>
-
       <div>
         <label class="block text-sm font-medium mb-1">Credenciais geradas</label>
         <div id="credentialsList" class="space-y-1"></div>
       </div>
-
       <div class="grid grid-cols-2 gap-2">
         <div>
           <label class="block text-sm font-medium mb-1">Cor do site</label>
@@ -78,17 +74,14 @@ body{background-color:var(--site-bg); transition:background-color .3s ease, back
           <input id="adminButtonColor" type="color" class="w-full h-10 p-0" onchange="adminChangeButtonColor(this.value)">
         </div>
       </div>
-
       <div>
         <label class="block text-sm font-medium mb-1">Membros online</label>
         <div id="onlineList" class="text-sm"></div>
       </div>
-
       <div>
         <button onclick="adminResetTheme()" class="px-4 py-2 rounded border">Resetar tema para padrão</button>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -97,14 +90,11 @@ body{background-color:var(--site-bg); transition:background-color .3s ease, back
   <div class="card w-full max-w-md p-6 relative">
     <button onclick="closeSettingsPanel()" class="absolute top-4 right-4 text-gray-600"><i data-feather="x"></i></button>
     <h3 class="text-xl font-bold mb-4">Configurações</h3>
-
     <div class="space-y-4">
-      <!-- Member settings -->
       <div>
         <label class="block text-sm font-medium mb-1">Seu nome</label>
         <input id="inputMemberName" type="text" class="w-full border rounded px-3 py-2" placeholder="Como quer ser identificado" />
       </div>
-
       <div class="grid grid-cols-2 gap-2">
         <div>
           <label class="block text-sm font-medium mb-1">Cor do site</label>
@@ -115,15 +105,11 @@ body{background-color:var(--site-bg); transition:background-color .3s ease, back
           <input id="memberBarColor" type="color" class="w-full h-10 p-0" onchange="memberChangeBarColor(this.value)" />
         </div>
       </div>
-
       <div>
         <label class="block text-sm font-medium mb-1">Imagem de fundo</label>
         <input type="file" accept="image/*" onchange="memberSetBackground(this.files[0])" />
       </div>
-
       <hr />
-
-      <!-- Admin login -->
       <div>
         <label class="block text-sm font-medium mb-1">Login de administrador</label>
         <input id="adminUserInput" placeholder="usuário" class="w-full border rounded px-3 py-2 mb-2" />
@@ -146,10 +132,11 @@ body{background-color:var(--site-bg); transition:background-color .3s ease, back
     </div>
   </header>
 
-  <!-- Add goal area -->
   <section class="card p-4 mb-4">
     <div class="flex gap-2">
       <input id="memberNameField" placeholder="Seu nome (opcional)" class="flex-1 border rounded px-3 py-2" />
       <input id="goalNameField" placeholder="Nome da meta" class="flex-2 border rounded px-3 py-2" />
       <button id="addGoalBtn" class="px-4 py-2 rounded" style="background:var(--button-color);color:white">Adicionar</button>
     </div>
+    <p class="text-sm text-gray-500 mt-2">Members podem colocar seu nome para identificar suas barras.</p>
+  </section
