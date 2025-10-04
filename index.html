@@ -23,12 +23,12 @@ body{background-color:var(--site-bg); transition:background-color .3s ease, back
 </head>
 <body class="min-h-screen">
 
-<!-- NOTIFICATION (toast) -->
+<!-- TOAST -->
 <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden">
   <div class="px-6 py-3 rounded-lg text-white" id="toastContent" style="background:var(--primary)"></div>
 </div>
 
-<!-- GLOBAL MESSAGE (modal centered) -->
+<!-- GLOBAL MESSAGE -->
 <div id="globalModal" class="global-modal hidden">
   <div class="card max-w-lg w-full p-6 text-center">
     <h3 class="text-xl font-bold mb-3">Mensagem da Moderação</h3>
@@ -37,7 +37,7 @@ body{background-color:var(--site-bg); transition:background-color .3s ease, back
   </div>
 </div>
 
-<!-- PROOFS VIEWER modal -->
+<!-- PROOFS MODAL -->
 <div id="proofsModal" class="global-modal hidden">
   <div class="card max-w-4xl w-full p-4 relative">
     <button onclick="closeProofsModal()" class="absolute top-3 right-3 text-gray-600"><i data-feather="x"></i></button>
@@ -46,24 +46,28 @@ body{background-color:var(--site-bg); transition:background-color .3s ease, back
   </div>
 </div>
 
-<!-- ADMIN PANEL modal -->
+<!-- ADMIN PANEL -->
 <div id="adminPanel" class="global-modal hidden">
   <div class="card w-full max-w-xl p-6 relative">
     <button onclick="closeAdminPanel()" class="absolute top-4 right-4 text-gray-600"><i data-feather="x"></i></button>
     <h3 class="text-2xl font-bold mb-4">Painel de Administração</h3>
+
     <div class="space-y-3">
       <div class="flex gap-2">
         <button onclick="openGlobalMessagePrompt()" class="flex-1 px-4 py-2 rounded" style="background:var(--button-color);color:white">Enviar Mensagem Global</button>
         <button onclick="openProofsModal()" class="px-4 py-2 rounded border">Ver Provas</button>
       </div>
+
       <div class="flex gap-2">
         <button onclick="generateCredential()" class="px-4 py-2 rounded" style="background:var(--primary);color:white">Gerar Credencial</button>
         <button onclick="downloadCredentials()" class="px-4 py-2 rounded border">Exportar</button>
       </div>
+
       <div>
         <label class="block text-sm font-medium mb-1">Credenciais geradas</label>
         <div id="credentialsList" class="space-y-1"></div>
       </div>
+
       <div class="grid grid-cols-2 gap-2">
         <div>
           <label class="block text-sm font-medium mb-1">Cor do site</label>
@@ -74,27 +78,33 @@ body{background-color:var(--site-bg); transition:background-color .3s ease, back
           <input id="adminButtonColor" type="color" class="w-full h-10 p-0" onchange="adminChangeButtonColor(this.value)">
         </div>
       </div>
+
       <div>
         <label class="block text-sm font-medium mb-1">Membros online</label>
         <div id="onlineList" class="text-sm"></div>
       </div>
+
       <div>
         <button onclick="adminResetTheme()" class="px-4 py-2 rounded border">Resetar tema para padrão</button>
       </div>
     </div>
+
   </div>
 </div>
 
-<!-- SETTINGS modal (members + admin login) -->
+<!-- SETTINGS -->
 <div id="settingsPanel" class="global-modal hidden">
   <div class="card w-full max-w-md p-6 relative">
     <button onclick="closeSettingsPanel()" class="absolute top-4 right-4 text-gray-600"><i data-feather="x"></i></button>
     <h3 class="text-xl font-bold mb-4">Configurações</h3>
+
     <div class="space-y-4">
+      <!-- Member -->
       <div>
         <label class="block text-sm font-medium mb-1">Seu nome</label>
         <input id="inputMemberName" type="text" class="w-full border rounded px-3 py-2" placeholder="Como quer ser identificado" />
       </div>
+
       <div class="grid grid-cols-2 gap-2">
         <div>
           <label class="block text-sm font-medium mb-1">Cor do site</label>
@@ -105,11 +115,15 @@ body{background-color:var(--site-bg); transition:background-color .3s ease, back
           <input id="memberBarColor" type="color" class="w-full h-10 p-0" onchange="memberChangeBarColor(this.value)" />
         </div>
       </div>
+
       <div>
         <label class="block text-sm font-medium mb-1">Imagem de fundo</label>
         <input type="file" accept="image/*" onchange="memberSetBackground(this.files[0])" />
       </div>
+
       <hr />
+
+      <!-- Admin login -->
       <div>
         <label class="block text-sm font-medium mb-1">Login de administrador</label>
         <input id="adminUserInput" placeholder="usuário" class="w-full border rounded px-3 py-2 mb-2" />
@@ -122,21 +136,21 @@ body{background-color:var(--site-bg); transition:background-color .3s ease, back
   </div>
 </div>
 
-<!-- MAIN APP -->
+<!-- MAIN -->
 <div class="container mx-auto p-6">
   <header class="flex items-center justify-between mb-6">
     <h1 class="text-2xl font-bold" style="color:var(--primary)">Progresso em Foco</h1>
     <div class="flex items-center gap-2">
-      <button title="Configurações" onclick="openSettingsPanel()" class="p-2 rounded hover:bg-gray-100"><i data-feather="settings"></i></button>
+      <button id="settingsIcon" title="Configurações" onclick="openSettingsPanel()" class="p-2 rounded hover:bg-gray-100"><i data-feather="settings"></i></button>
       <button id="shieldIcon" title="Admin" onclick="openAdminPanel()" class="p-2 rounded hover:bg-gray-100 hidden"><i data-feather="shield"></i></button>
     </div>
   </header>
 
+  <!-- Add goal -->
   <section class="card p-4 mb-4">
     <div class="flex gap-2">
       <input id="memberNameField" placeholder="Seu nome (opcional)" class="flex-1 border rounded px-3 py-2" />
       <input id="goalNameField" placeholder="Nome da meta" class="flex-2 border rounded px-3 py-2" />
       <button id="addGoalBtn" class="px-4 py-2 rounded" style="background:var(--button-color);color:white">Adicionar</button>
     </div>
-    <p class="text-sm text-gray-500 mt-2">Members podem colocar seu nome para identificar suas barras.</p>
-  </section
+    <p class="text-sm text-gray-500 mt-2">Members podem colocar seu nome para identificar suas barras.</
