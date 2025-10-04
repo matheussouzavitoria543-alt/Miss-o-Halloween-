@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progresso em Foco</title>
+<script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        dark: '#1E293B',
+                        light: '#F8FAFC'
+                    }
+                }
+            }
+        }
+    </script>
+        <style>
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+        .bg-custom {
+            background-color: var(--color-custom);
+        }
+        .hover\:bg-custom-dark:hover {
+            background-color: var(--color-custom-dark);
+        }
+.notification {
+            animation: slideIn 0.5s forwards, fadeOut 0.5s 2.5s forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Notification Area -->
+    <div id="notification" class="notification fixed top-4 left-1/2 transform -translate-x-1/2 z-50 hidden">
+        <div class="bg-primary text-white px-6 py-3 rounded-lg shadow-lg flex items-center">
+            <i data-feather="alert-circle" class="mr-2"></i>
+            <span id="notification-message"></span>
+                </div>
+                <script>
+                    let currentProofIndex = 0;
+                    const allProofs = Array.from(document.querySelectorAll('[id^="progressPhoto"]'))
+                        .map(input => input.files?.[0])
+                        .filter(Boolean);
+
+                    function navigateProofs(direction) {
+                        currentProofIndex = (currentProofIndex + direction + allProofs.length) % allProofs.length;
+                        const newFile = allProofs[currentProofIndex];
+                        handleFileUpload(currentProofIndex, newFile);
+                    }
+
+                    function downloadImage(src) {
+                        const link = document.createElement('a');
+                        link.href = src;
+                        link.download = `comprovacao-${new Date(date).toISOString().split('T')[0]}.jpg`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }
+                </script>
+</div>
+
+    <!-- Admin Modal -->
+    <div id="adminModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Admin Panel</h3>
+                <button onclick="closeAdminModal()" class="text-gray-500 hover:text-gray-700">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Global Message</label>
+                    <textarea id="globalMessage" class="w-full border rounded p-2" rows="3"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Generate Admin Credentials</label>
+                    <button onclick="generateAdminCredentials()" class="w-full bg-primary text-white py-2 rounded hover:bg-primary-dark">
+                        Generate
+                    </button>
+                    <div id="adminCredentials" class="mt-2 p-2 bg-gray-100 rounded hidden">
+                        <p class="text-sm">Save these credentials:</p>
+                        <p id="generatedAdmin" class="font-mono"></p>
+                        <p id="generatedPassword" class="font-mono"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl p-8 w-full max-w-md">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <h3 class="text-2xl font-bold text-gray-800">Configurações</h3>
+                <button onclick="closeSettingsModal()" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    <i data-feather="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-6">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="text-lg font-semibold text-gray-700 mb-3">Aparência</h4>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Tema do Sistema</label>
+                            <div class="flex gap-3">
+                                <button onclick="changeThemeColor('blue', '#3B82F6')" class="w-10 h-10 rounded-lg bg-blue-500 hover:ring-2 hover:ring-blue-300 transition-all"></button>
+                                <button onclick="changeThemeColor('green', '#10B981')" class="w-10 h-10 rounded-lg bg-green-500 hover:ring-2 hover:ring-green-300 transition-all"></button>
+                                <button onclick="changeThemeColor('yellow', '#F59E0B')" class="w-10 h-10 rounded-lg bg-yellow-500 hover:ring-2 hover:ring-yellow-300 transition-all"></button>
+                                <button onclick="changeThemeColor('red', '#EF4444')" class="w-10 h-10 rounded-lg bg-red-500 hover:ring-2 hover:ring-red-300 transition-all"></button>
+                                <button onclick="changeThemeColor('purple', '#8B5CF6')" class="w-10 h-10 rounded-lg bg-purple-500 hover:ring-2 hover:ring-purple-300 transition-all"></button>
+</div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Cor das Barras</label>
+                            <div class="flex gap-3">
+                                <button onclick="changeBarColor('#3B82F6')" class="w-10 h-10 rounded-lg bg-blue-500 hover:ring-2 hover:ring-blue-300 transition-all"></button>
+                                <button onclick="changeBarColor('#10B981')" class="w-10 h-10 rounded-lg bg-green-500 hover:ring-2 hover:ring-green-300 transition-all"></button>
+                                <button onclick="changeBarColor('#F59E0B')" class="w-10 h-10 rounded-lg bg-yellow-500 hover:ring-2 hover:ring-yellow-300 transition-all"></button>
+                                <button onclick="changeBarColor('#EF4444')" class="w-10 h-10 rounded-lg bg-red-500 hover:ring-2 hover:ring-red-300 transition-all"></button>
+                                <button onclick="changeBarColor('#8B5CF6')" class="w-10 h-10 rounded-lg bg-purple-500 hover:ring-2 hover:ring-purple-300 transition-all"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="text-lg font-semibold text-gray-700 mb-3">Acesso Administrativo</h4>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">Usuário</label>
+                            <input id="adminUsername" type="text" placeholder="Digite seu usuário" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">Senha</label>
+                            <input id="adminPassword" type="password" placeholder="Digite sua senha" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                        </div>
+                <button id="adminLoginBtn" class="w-full bg-primary hover:bg-primary-dark text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors">
+<i data-feather="lock" class="w-4 h-4"></i>
+                            Entrar como Administrador
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Main App Container -->
+    <div class="container mx-auto px-4 py-8">
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-primary">Progresso em Foco</h1>
+<div class="flex space-x-4">
+                <button onclick="openSettingsModal()" class="p-2 rounded-full hover:bg-gray-200">
+                    <i data-feather="settings"></i>
+                </button>
+        <button id="adminBtn" class="p-2 rounded-full hover:bg-gray-200 hidden" onclick="openAdminModal()">
+<i data-feather="shield"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Add New Bar Form -->
+        <div class="bg-white rounded-lg shadow p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Adicionar Nova Meta</h2>
+            <div class="flex gap-4">
+                <input id="newBarName" type="text" placeholder="Nome da Meta" class="border rounded p-2 flex-1">
+                <button id="addBarBtn" class="bg-primary text-white px-6 py-2 rounded hover:bg-primary-dark">
+                    Adicionar
+                </button>
+</div>
+</div>
+
+        <!-- Progress Bars Container -->
+        <div id="barsContainer" class="space-y-6">
+            <!-- Bars will be added here dynamically -->
+        </div>
+        <!-- Global Message Display (centered modal style) -->
+        <div id="globalMessageDisplay" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full mx-4 relative">
+                <div class="absolute top-4 right-4">
+                    <button onclick="closeGlobalMessage()" class="text-gray-500 hover:text-gray-700">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+                        <i data-feather="alert-triangle" class="text-yellow-500 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Mensagem da Moderação</h3>
+<p id="globalMessageText" class="text-gray-600 mb-6"></p>
+                    <button onclick="closeGlobalMessage(true)" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
+                        Entendi
+                    </button>
+</div>
+            </div>
+        </div>
+</div>
+    <script>
+        // Initialize CSS variables for custom colors
+        document.documentElement.style.setProperty('--color-custom', localStorage.getItem('barColor') || '#3B82F6');
+        document.documentElement.style.setProperty('--color-custom-dark', getDarkerColor(localStorage.getItem('barColor') || '#3B82F6'));
+        
+        function getDarkerColor(color) {
+            if (!color) color = '#3B82F6';
+            const amount = 20;
+            let usePound = false;
+            if (color[0] === "#") {
+                color = color.slice(1);
+                usePound = true;
+            }
+            const num = parseInt(color, 16);
+            let r = (num >> 16) - amount;
+            if (r > 255) r = 255;
+            else if (r < 0) r = 0;
+            let b = ((num >> 8) & 0x00FF) - amount;
+            if (b > 255) b = 255;
+            else if (b < 0) b = 0;
+            let g = (num & 0x0000FF) - amount;
+            if (g > 255) g = 255;
+            else if (g < 0) g = 0;
+            return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
+        }
+        
+        // Inicializar ícones
+feather.replace();
+
+        // Variáveis globais
+let bars = JSON.parse(localStorage.getItem('progressBars')) || [];
+        let barColor = localStorage.getItem('barColor') || '#3B82F6';
+        let themeColor = localStorage.getItem('themeColor') || 'primary';
+        let adminCredentials = JSON.parse(localStorage.getItem('adminCredentials')) || null;
+        let globalMessage = localStorage.getItem('globalMessage') || '';
+        let isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            renderBars();
+            updateTheme();
+            checkAdminStatus();
+            showGlobalMessage();
+
+            // Show admin button if logged in as admin
+            if (isAdmin) {
+                document.getElementById('adminBtn').classList.remove('hidden');
+            }
+        });
+
+        // Render all progress bars
+        function renderBars() {
+            const container = document.getElementById('barsContainer');
+            container.innerHTML = '';
+
+            bars.forEach((bar, index) => {
+                const barElement = document.createElement('div');
+                barElement.className = 'bg-white rounded-lg shadow p-6';
+                barElement.innerHTML = `
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">${bar.name}</h3>
+                        <div class="flex space-x-2">
+                            <button onclick="editBarName(${index})" class="p-1 text-gray-500 hover:text-primary" title="Editar nome">
+                                <i data-feather="edit-2" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="deleteBar(${index})" class="p-1 text-gray-500 hover:text-red-500" title="Resetar progresso">
+                                <i data-feather="rotate-ccw" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="deleteBarCompletely(${index})" class="p-1 text-red-500 hover:text-red-700" title="Excluir meta">
+                                <i data-feather="trash-2" class="w-4 h-4"></i>
+                            </button>
+</div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full rounded-full" style="width: ${bar.progress}%; background-color: ${barColor};"></div>
+                        </div>
+                        <span>${bar.progress}%</span>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex items-center gap-2">
+                            <input type="file" id="progressPhoto-${index}" accept="image/*" class="hidden" 
+                                   onchange="handleFileUpload(${index}, this.files[0])">
+                            <label for="progressPhoto-${index}" class="cursor-pointer bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark flex items-center gap-2">
+                                <i data-feather="camera"></i>
+                                <span>Enviar Comprovação</span>
+                            </label>
+</div>
+                        <div class="mt-4">
+                            <h4 class="text-sm font-medium mb-2">Comprovações (${bar.proofs ? bar.proofs.length : 0})</h4>
+                            <div class="grid grid-cols-3 gap-2">
+                                ${bar.proofs && bar.proofs.length > 0 ? bar.proofs.map(proof => `
+                                    <div class="relative">
+                                        <img src="${proof.image}" class="w-full h-24 object-cover rounded border">
+                                        <span class="absolute bottom-1 left-1 text-xs text-white bg-black bg-opacity-50 px-1 rounded">${new Date(proof.date).toLocaleDateString()}</span>
+                                    </div>
+                                `).join('') : '<p class="text-sm text-gray-500">Nenhuma comprovação enviada ainda</p>'}
+                            </div>
+                        </div>
+</div>
+`;
+                container.appendChild(barElement);
+            });
+            feather.replace();
+        }
+        // Add a new progress bar
+        function addNewBar() {
+            const nameInput = document.getElementById('newBarName');
+            const name = nameInput.value.trim();
+            
+            if (name) {
+                bars.push({
+                    name: name,
+                    progress: 0,
+                    proofs: []
+                });
+                localStorage.setItem('progressBars', JSON.stringify(bars));
+                nameInput.value = '';
+                renderBars();
+                showNotification('Meta adicionada com sucesso!');
+            } else {
+                showNotification('Por favor, digite um nome para a meta');
+            }
+        }
+
+        // Handle file upload and progress update
+        function handleFileUpload(index, file) {
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Store proof
+                bars[index].proofs.push({
+                    date: new Date().toISOString(),
+                    image: e.target.result
+                });
+                
+                // Only update progress if proof was uploaded
+                const currentProgress = bars[index].progress;
+                const newProgress = Math.min(currentProgress + 10, 100); // Increment by 10% per proof
+                
+                if (newProgress > currentProgress) {
+                    bars[index].progress = newProgress;
+                    localStorage.setItem('progressBars', JSON.stringify(bars));
+                    renderBars();
+                    showNotification('Progresso atualizado com sucesso!');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+        // Show proof details modal
+        // Enhanced proof details with navigation
+        function showProofDetails(imageSrc, date) {
+const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg p-4 max-w-2xl w-full">
+                    <div class="flex justify-between items-center mb-4">
+                        <button onclick="navigateProofs(-1)" class="p-2 text-gray-500 hover:text-primary">
+                            <i data-feather="chevron-left" class="w-6 h-6"></i>
+                        </button>
+                        <h3 class="text-lg font-semibold">Comprovação</h3>
+                        <button onclick="navigateProofs(1)" class="p-2 text-gray-500 hover:text-primary">
+                            <i data-feather="chevron-right" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+<div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Comprovação</h3>
+                        <button onclick="this.parentElement.parentEl
