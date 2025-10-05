@@ -7,10 +7,10 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/feather-icons"></script>
 <style>
-.progress-bar { transition: width 0.5s ease-in-out; }
-.notification { animation: slideIn 0.5s forwards, fadeOut 0.5s 2.5s forwards; }
-@keyframes slideIn { from { transform: translateY(-100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+  .progress-bar { transition: width 0.5s ease-in-out; }
+  .notification { animation: slideIn 0.5s forwards, fadeOut 0.5s 2.5s forwards; }
+  @keyframes slideIn { from { transform: translateY(-100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -23,7 +23,7 @@
   </div>
 </div>
 
-<!-- Modal Configurações (cores + login admin) -->
+<!-- Modal Configurações -->
 <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
   <div class="bg-white rounded-xl shadow-xl p-8 w-full max-w-md">
     <div class="flex justify-between items-center mb-6 border-b pb-4">
@@ -33,7 +33,6 @@
       </button>
     </div>
     <div class="space-y-6">
-      <!-- Cores -->
       <div>
         <h4 class="font-semibold mb-2">Tema do Sistema</h4>
         <div class="flex gap-3 mb-4">
@@ -52,7 +51,6 @@
           <button onclick="changeBarColor('#8B5CF6')" class="w-10 h-10 rounded-lg bg-purple-500"></button>
         </div>
       </div>
-      <!-- Login Admin -->
       <div class="pt-4 border-t">
         <h4 class="font-semibold mb-2">Login do Administrador</h4>
         <div class="mb-3">
@@ -72,11 +70,9 @@
   <div class="bg-white rounded-xl shadow-xl p-8 w-full max-w-lg overflow-auto max-h-[90vh]">
     <div class="flex justify-between items-center mb-6">
       <h3 class="text-2xl font-bold">Painel de Administração</h3>
-      <div class="flex gap-2">
-        <button onclick="closeAdminModal()" class="text-gray-500 hover:text-gray-700">
-          <i data-feather="x" class="w-6 h-6"></i>
-        </button>
-      </div>
+      <button onclick="closeAdminModal()" class="text-gray-500 hover:text-gray-700">
+        <i data-feather="x" class="w-6 h-6"></i>
+      </button>
     </div>
     <div class="space-y-4">
       <h4 class="font-semibold text-lg">Gerenciar Metas</h4>
@@ -99,7 +95,6 @@
   </div>
 </div>
 
-<!-- Header / Conteúdo -->
 <div class="container mx-auto px-4 py-8">
   <header class="flex justify-between items-center mb-8">
     <h1 class="text-3xl font-bold text-blue-500">Progresso em Foco</h1>
@@ -109,7 +104,6 @@
     </div>
   </header>
 
-  <!-- Adicionar Meta -->
   <div class="bg-white rounded-lg shadow p-6 mb-8">
     <h2 class="text-xl font-semibold mb-4">Adicionar Nova Meta</h2>
     <div class="flex gap-4">
@@ -118,32 +112,28 @@
     </div>
   </div>
 
-  <!-- Placar Geral -->
   <div class="bg-white rounded-lg shadow p-6 mb-8">
     <h2 class="text-xl font-semibold mb-4">Placar Geral</h2>
     <div id="leaderboard" class="space-y-2"></div>
   </div>
 
-  <!-- Barras -->
   <div id="barsContainer" class="space-y-6"></div>
 </div>
 
-<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, get } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, get, remove } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
 
+// Configuração Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyDun-EEYvE7pUYtJCS7APB6J4xSD-gN0oE",
-  authDomain: "famous-city-rp.firebaseapp.com",
-  databaseURL: "https://famous-city-rp-default-rtdb.firebaseio.com",
-  projectId: "famous-city-rp",
-  storageBucket: "famous-city-rp.firebasestorage.app",
-  messagingSenderId: "938453127813",
-  appId: "1:938453127813:web:11c4e6500b3828a8bacfec",
-  measurementId: "G-BXHKSPBFTN"
+  apiKey: "SUA_API_KEY",
+  authDomain: "SEU_AUTH_DOMAIN",
+  databaseURL: "SUA_DB_URL",
+  projectId: "SEU_PROJECT_ID",
+  storageBucket: "SEU_STORAGE_BUCKET",
+  messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+  appId: "SEU_APP_ID"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
@@ -159,13 +149,17 @@ function showNotification(msg){
   setTimeout(()=>el.classList.add('hidden'), 2500);
 }
 
-// Settings Modal
+// Modals
 function openSettingsModal(){ document.getElementById('settingsModal').classList.remove('hidden'); }
 function closeSettingsModal(){ document.getElementById('settingsModal').classList.add('hidden'); }
+function openAdminModal(){ if(!isAdmin){ alert('Somente administradores!'); return; } document.getElementById('adminModal').classList.remove('hidden'); renderAdminBars(); }
+function closeAdminModal(){ document.getElementById('adminModal').classList.add('hidden'); }
+
+// Cores
 function changeThemeColor(hex){ document.documentElement.style.setProperty('--color-primary', hex); showNotification('Tema alterado'); }
 function changeBarColor(hex){ barColor = hex; renderBars(); showNotification('Cor da barra alterada'); }
 
-// Admin functions
+// Admin login
 function loginAdmin(){
   const user = document.getElementById('adminUsername').value.trim();
   const pass = document.getElementById('adminPassword').value.trim();
@@ -173,15 +167,12 @@ function loginAdmin(){
   get(ref(db,'admins')).then(snap=>{
     const adminsData = snap.val()||{};
     const valid = Object.values(adminsData).some(a=>a.username===user && a.password===pass);
-    if(valid){
-      isAdmin = true;
-      document.getElementById('adminBtn').classList.remove('hidden');
-      closeSettingsModal();
-      showNotification('Login de administrador realizado!');
-    } else alert('Usuário ou senha incorretos.');
+    if(valid){ isAdmin = true; document.getElementById('adminBtn').classList.remove('hidden'); closeSettingsModal(); showNotification('Login de administrador realizado!'); }
+    else alert('Usuário ou senha incorretos.');
   });
 }
 
+// Criar Admin
 function createAdmin(){
   const u = document.getElementById('newAdminUser').value.trim();
   const p = document.getElementById('newAdminPass').value.trim();
@@ -189,14 +180,10 @@ function createAdmin(){
   const newAdminRef = push(ref(db,'admins'));
   set(newAdminRef,{username:u,password:p});
   showNotification('Novo administrador criado!');
-  document.getElementById('newAdminUser').value='';
-  document.getElementById('newAdminPass').value='';
+  document.getElementById('newAdminUser').value=''; document.getElementById('newAdminPass').value='';
 }
 
-function openAdminModal(){ if(!isAdmin){ alert('Somente administradores!'); return; } document.getElementById('adminModal').classList.remove('hidden'); renderAdminBars(); }
-function closeAdminModal(){ document.getElementById('adminModal').classList.add('hidden'); }
-
-// Render barras e envio de provas
+// Renderizar barras
 function renderBars(){
   const container = document.getElementById('barsContainer');
   container.innerHTML='';
@@ -205,7 +192,13 @@ function renderBars(){
     barEl.className='bg-white rounded-lg shadow p-6';
     barEl.innerHTML=`
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-semibold">${b.name} <span class="text-sm text-gray-500">(${b.member||'Membro'})</span></h3>
+        <h3 class="text-lg font-semibold">
+          <input type="text" value="${b.name}" onchange="updateBarName('${b.key}',this.value)" class="border-b border-gray-300 focus:outline-none focus:border-blue-500 px-1">
+          <span class="text-sm text-gray-500"> | Membro: 
+            <input type="text" value="${b.member||'Membro'}" onchange="updateBarMember('${b.key}',this.value)" class="border-b border-gray-300 focus:outline-none focus:border-blue-500 px-1">
+          </span>
+        </h3>
+        <button onclick="deleteBar('${b.key}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Excluir</button>
       </div>
       <div class="flex items-center space-x-4 mb-2">
         <div class="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden">
@@ -225,13 +218,19 @@ function renderBars(){
   feather.replace();
 }
 
+// Atualizar barra
+function updateBarName(key,name){ set(ref(db,'bars/'+key+'/name'),name); showNotification('Nome da barra atualizado'); }
+function updateBarMember(key,member){ set(ref(db,'bars/'+key+'/member'),member); showNotification('Nome do membro atualizado'); }
+
+// Excluir barra
+function deleteBar(key){ if(confirm('Deseja excluir esta barra?')) remove(ref(db,'bars/'+key)); }
+
 // Upload de prova
 function handleFileUpload(barKey,file){
   if(!file) return;
   const reader = new FileReader();
   reader.onload=function(e){
-    const barRef = ref(db,'bars/'+barKey+'/proofs');
-    push(barRef,{date:new Date().toISOString(),image:e.target.result});
+    push(ref(db,'bars/'+barKey+'/proofs'),{date:new Date().toISOString(),image:e.target.result});
     const progressRef = ref(db,'bars/'+barKey+'/progress');
     get(progressRef).then(snap=>{ set(progressRef, Math.min((snap.val()||0)+10,100)); });
     showNotification('Prova enviada e progresso atualizado');
@@ -239,7 +238,7 @@ function handleFileUpload(barKey,file){
   reader.readAsDataURL(file);
 }
 
-// Adicionar barra
+// Nova barra
 document.getElementById('addBarBtn').addEventListener('click',()=>{
   const name=document.getElementById('newBarName').value.trim();
   if(!name){ alert('Digite o nome da meta'); return; }
@@ -250,20 +249,42 @@ document.getElementById('addBarBtn').addEventListener('click',()=>{
   showNotification('Meta adicionada!');
 });
 
-// Global message
+// Mensagem global
 function sendGlobalMessage(){
-  const msg = document.getElementById('globalMessageInput').value.trim();
+  const msg=document.getElementById('globalMessageInput').value.trim();
   if(!msg){ alert('Digite uma mensagem'); return; }
-  set(ref(db,'globalMessage'),msg);
-  showNotification('Mensagem global enviada!');
-  document.getElementById('globalMessageInput').value='';
+  set(ref(db,'globalMessage'),msg); showNotification('Mensagem global enviada!'); document.getElementById('globalMessageInput').value='';
 }
 
-// Escutar mudanças
+// Admin barras
+function renderAdminBars(){
+  const list = document.getElementById('adminBarsList');
+  list.innerHTML='';
+  bars.forEach(b=>{
+    const el=document.createElement('div');
+    el.className='bg-gray-100 p-3 rounded flex justify-between items-center';
+    el.innerHTML=`<div>${b.name} (${b.member||'Membro'}) - ${b.progress}%</div>
+      <button onclick="viewProofs('${b.key}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">Ver Provas</button>`;
+    list.appendChild(el);
+  });
+}
+
+// Ver provas
+function viewProofs(barKey){
+  get(ref(db,'bars/'+barKey+'/proofs')).then(snap=>{
+    const proofs = snap.val()||{};
+    let msg='Provas:\n';
+    Object.values(proofs).forEach((p,i)=>{ msg+=`${i+1}. Data: ${p.date}\nImagem: ${p.image.substring(0,50)}...\n`; });
+    alert(msg);
+  });
+}
+
+// Escutar Firebase
 onValue(ref(db,'bars'),snap=>{
-  const data = snap.val()||{};
+  const data=snap.val()||{};
   bars = Object.entries(data).map(([key,val])=>({key,...val}));
   renderBars();
+  if(isAdmin) renderAdminBars();
 });
 
 onValue(ref(db,'globalMessage'),snap=>{
@@ -272,18 +293,6 @@ onValue(ref(db,'globalMessage'),snap=>{
 });
 
 document.addEventListener('DOMContentLoaded',()=>{ feather.replace(); });
-
-// Admin render barras no painel
-function renderAdminBars(){
-  const container = document.getElementById('adminBarsList');
-  container.innerHTML='';
-  bars.forEach(b=>{
-    const div = document.createElement('div');
-    div.className='bg-gray-100 p-3 rounded flex justify-between items-center';
-    div.innerHTML=`<span>${b.name} (${b.member}) - ${b.progress}%</span>`;
-    container.appendChild(div);
-  });
-}
 </script>
 </body>
 </html>
